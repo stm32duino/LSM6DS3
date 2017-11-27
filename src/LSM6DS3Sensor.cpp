@@ -42,7 +42,6 @@
 #include "Arduino.h"
 #include "Wire.h"
 #include "LSM6DS3Sensor.h"
-#include "LSM6DS3_ACC_GYRO_Driver.h"
 
 
 /* Class Implementation ------------------------------------------------------*/
