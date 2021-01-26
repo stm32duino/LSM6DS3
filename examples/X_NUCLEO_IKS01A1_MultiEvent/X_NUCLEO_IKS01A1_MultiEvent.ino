@@ -57,7 +57,7 @@
 #endif
 
 // Components.
-LSM6DS3Sensor *AccGyr;
+LSM6DS3Sensor AccGyr(&DEV_I2C, LSM6DS3_ACC_GYRO_I2C_ADDRESS_LOW);
 
 //Interrupts.
 volatile int mems_event = 0;
@@ -83,18 +83,18 @@ void setup() {
   attachInterrupt(A2, INT1Event_cb, RISING);
   attachInterrupt(A3, INT2Event_cb, RISING);
 
-  // Initlialize Components.
-  AccGyr = new LSM6DS3Sensor(&DEV_I2C, LSM6DS3_ACC_GYRO_I2C_ADDRESS_LOW);
-  AccGyr->Enable_X();
+  // Initialize Components.
+  AccGyr.begin();
+  AccGyr.Enable_X();
 
   // Enable all HW events.
-  AccGyr->Enable_Pedometer();
-  AccGyr->Enable_Tilt_Detection();
-  AccGyr->Enable_Free_Fall_Detection();
-  AccGyr->Enable_Single_Tap_Detection();
-  AccGyr->Enable_Double_Tap_Detection();
-  AccGyr->Enable_6D_Orientation();
-  AccGyr->Enable_Wake_Up_Detection();
+  AccGyr.Enable_Pedometer();
+  AccGyr.Enable_Tilt_Detection();
+  AccGyr.Enable_Free_Fall_Detection();
+  AccGyr.Enable_Single_Tap_Detection();
+  AccGyr.Enable_Double_Tap_Detection();
+  AccGyr.Enable_6D_Orientation();
+  AccGyr.Enable_Wake_Up_Detection();
 }
 
 void loop() {
@@ -102,12 +102,12 @@ void loop() {
   {
     mems_event = 0;
     LSM6DS3_Event_Status_t status;
-    AccGyr->Get_Event_Status(&status);
+    AccGyr.Get_Event_Status(&status);
 
     if (status.StepStatus)
     {
       // New step detected, so print the step counter
-      AccGyr->Get_Step_Counter(&step_count);
+      AccGyr.Get_Step_Counter(&step_count);
       snprintf(report, sizeof(report), "Step counter: %d", step_count);
       SerialPort.println(report);
     }
@@ -169,12 +169,12 @@ void sendOrientation()
   uint8_t zl = 0;
   uint8_t zh = 0;
   
-  AccGyr->Get_6D_Orientation_XL(&xl);
-  AccGyr->Get_6D_Orientation_XH(&xh);
-  AccGyr->Get_6D_Orientation_YL(&yl);
-  AccGyr->Get_6D_Orientation_YH(&yh);
-  AccGyr->Get_6D_Orientation_ZL(&zl);
-  AccGyr->Get_6D_Orientation_ZH(&zh);
+  AccGyr.Get_6D_Orientation_XL(&xl);
+  AccGyr.Get_6D_Orientation_XH(&xh);
+  AccGyr.Get_6D_Orientation_YL(&yl);
+  AccGyr.Get_6D_Orientation_YH(&yh);
+  AccGyr.Get_6D_Orientation_ZL(&zl);
+  AccGyr.Get_6D_Orientation_ZH(&zh);
   
   if ( xl == 0 && yl == 0 && zl == 0 && xh == 0 && yh == 1 && zh == 0 )
   {
