@@ -56,7 +56,7 @@
 #endif
 
 // Components.
-LSM6DS3Sensor *AccGyr;
+LSM6DS3Sensor AccGyr(&DEV_I2C, LSM6DS3_ACC_GYRO_I2C_ADDRESS_LOW);
 
 //Interrupts.
 volatile int mems_event = 0;
@@ -81,12 +81,12 @@ void setup() {
   //Interrupts.
   attachInterrupt(A2, INT1Event_cb, RISING);
 
-  // Initlialize Components.
-  AccGyr = new LSM6DS3Sensor(&DEV_I2C, LSM6DS3_ACC_GYRO_I2C_ADDRESS_LOW);
-  AccGyr->Enable_X();
+  // Initialize Components.
+  AccGyr.begin();
+  AccGyr.Enable_X();
 
   // Enable Pedometer.
-  AccGyr->Enable_Pedometer();
+  AccGyr.Enable_Pedometer();
   
   previous_tick = millis();
 }
@@ -96,11 +96,11 @@ void loop() {
   {
     mems_event = 0;
     LSM6DS3_Event_Status_t status;
-    AccGyr->Get_Event_Status(&status);
+    AccGyr.Get_Event_Status(&status);
     if (status.StepStatus)
     {
       // New step detected, so print the step counter
-      AccGyr->Get_Step_Counter(&step_count);
+      AccGyr.Get_Step_Counter(&step_count);
       snprintf(report, sizeof(report), "Step counter: %d", step_count);
       SerialPort.println(report);
       
@@ -115,7 +115,7 @@ void loop() {
   current_tick = millis();
   if((current_tick - previous_tick) >= 3000)
   {
-    AccGyr->Get_Step_Counter(&step_count);
+    AccGyr.Get_Step_Counter(&step_count);
     snprintf(report, sizeof(report), "Step counter: %d", step_count);
     SerialPort.println(report);
     previous_tick = millis();

@@ -56,7 +56,7 @@
 #endif
 
 // Components.
-LSM6DS3Sensor *AccGyr;
+LSM6DS3Sensor AccGyr(&DEV_I2C, LSM6DS3_ACC_GYRO_I2C_ADDRESS_LOW);
 
 //Interrupts.
 volatile int mems_event = 0;
@@ -76,19 +76,19 @@ void setup() {
   //Interrupts.
   attachInterrupt(A3, INT2Event_cb, RISING);
 
-  // Initlialize Components.
-  AccGyr = new LSM6DS3Sensor(&DEV_I2C, LSM6DS3_ACC_GYRO_I2C_ADDRESS_LOW);
-  AccGyr->Enable_X();
+  // Initialize Components.
+  AccGyr.begin();
+  AccGyr.Enable_X();
 
   // Enable Wake Up Detection.
-  AccGyr->Enable_Wake_Up_Detection();
+  AccGyr.Enable_Wake_Up_Detection();
 }
 
 void loop() {
   if (mems_event) {
     mems_event = 0;
     LSM6DS3_Event_Status_t status;
-    AccGyr->Get_Event_Status(&status);
+    AccGyr.Get_Event_Status(&status);
     if (status.WakeUpStatus)
     {
       // Led blinking.

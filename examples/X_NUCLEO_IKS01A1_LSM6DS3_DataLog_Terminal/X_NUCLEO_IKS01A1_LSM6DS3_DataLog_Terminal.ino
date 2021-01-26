@@ -55,7 +55,7 @@
 #endif
 
 // Components.
-LSM6DS3Sensor *AccGyr;
+LSM6DS3Sensor AccGyr(&DEV_I2C, LSM6DS3_ACC_GYRO_I2C_ADDRESS_LOW);
 
 void setup() {
   // Led.
@@ -67,10 +67,10 @@ void setup() {
   // Initialize I2C bus.
   DEV_I2C.begin();
 
-  // Initlialize components.
-  AccGyr = new LSM6DS3Sensor(&DEV_I2C, LSM6DS3_ACC_GYRO_I2C_ADDRESS_LOW);
-  AccGyr->Enable_X();
-  AccGyr->Enable_G();
+  // Initialize components.
+  AccGyr.begin();
+  AccGyr.Enable_X();
+  AccGyr.Enable_G();
 }
 
 void loop() {
@@ -83,8 +83,8 @@ void loop() {
   // Read accelerometer and gyroscope.
   int32_t accelerometer[3];
   int32_t gyroscope[3];
-  AccGyr->Get_X_Axes(accelerometer);
-  AccGyr->Get_G_Axes(gyroscope);
+  AccGyr.Get_X_Axes(accelerometer);
+  AccGyr.Get_G_Axes(gyroscope);
 
   // Output data.
   SerialPort.print("| Acc[mg]: ");
